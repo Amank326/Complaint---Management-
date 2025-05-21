@@ -1,0 +1,76 @@
+from flask import Flask, render_template_string, request, jsonify
+
+app = Flask(__name__)
+
+# Sample complaints list
+complaints = [
+    {
+        "id": 1,
+        "title": "Broken Chair",
+        "student_name": "Aman Gupta",
+        "email": "aman@example.com",
+        "description": "Chair in classroom is broken",
+        "type": "Infrastructure",
+        "status": "Submitted",
+        "submitted_at": "2025-05-20 12:00",
+        "file_url": ""
+    },
+    {
+        "id": 2,
+        "title": "WiFi Not Working",
+        "student_name": "Neha Sharma",
+        "email": "neha@example.com",
+        "description": "WiFi not working in library",
+        "type": "IT",
+        "status": "InProgress",
+        "submitted_at": "2025-05-19 15:30",
+        "file_url": ""
+    }
+]
+
+# HTML Template string (your HTML pasted here)
+student_dashboard_html = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  ...
+  <!-- (HTML content you've pasted above remains same here) -->
+  ...
+</html>
+"""
+
+@app.route("/student_dashboard")
+def student_dashboard():
+    return render_template_string(student_dashboard_html)
+
+@app.route("/get_complaints")
+def get_complaints():
+    return jsonify({"complaints": complaints})
+
+@app.route("/update_status", methods=["POST"])
+def update_status():
+    data = request.json
+    complaint_id = data.get("id")
+    new_status = data.get("status")
+    
+    for c in complaints:
+        if c["id"] == complaint_id:
+            c["status"] = new_status
+            return jsonify({"success": True})
+    return jsonify({"success": False, "error": "Complaint not found"}), 404
+
+@app.route("/assign_complaint", methods=["POST"])
+def assign_complaint():
+    data = request.json
+    complaint_id = data.get("id")
+    assignee = data.get("assignee")
+    
+    for c in complaints:
+        if c["id"] == complaint_id:
+            c["status"] = "Assigned"
+            c["assignee"] = assignee
+            return jsonify({"success": True, "message": f"Complaint assigned to {assignee}"})
+    
+    return jsonify({"success": False, "error": "Complaint not found"}), 404
+
+if __name__ == "__main__":
+    app.run(debug=True)
