@@ -52,7 +52,7 @@ graph TD;
 
 ```bash
 # Clone the Repository
-git clone https://github.com/sahutushar/Complaint-management.git
+git clone https://github.com/Amank326/Complaint---Management-
 cd Complaint-management
 
 # Create Virtual Environment
